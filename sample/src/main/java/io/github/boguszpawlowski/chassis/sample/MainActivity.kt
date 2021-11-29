@@ -1,4 +1,4 @@
-package io.github.boguszpawlowski.androidtemplate
+package io.github.boguszpawlowski.chassis.sample
 
 import android.os.Bundle
 import androidx.activity.compose.setContent

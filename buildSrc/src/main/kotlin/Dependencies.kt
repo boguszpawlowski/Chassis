@@ -1,23 +1,4 @@
 @file:Suppress("ObjectPropertyNaming", "ClassNaming", "UnderscoresInNumericLiterals")
-object App {
-  private const val versionMajor = 0
-  private const val versionMinor = 0
-  private const val versionPatch = 1
-  private val versionClassifier: String? = null
-  private const val isSnapshot = true
-
-  private fun generateVersionName(): String {
-    val versionName = "$versionMajor.$versionMinor.$versionPatch"
-    val classifier = if (versionClassifier == null && isSnapshot) {
-      "-SNAPSHOT"
-    } else versionClassifier ?: ""
-
-    return "$versionName$classifier"
-  }
-
-  val VersionName = generateVersionName()
-}
-
 object MavenPublish {
   const val PluginId = "com.vanniktech.maven.publish"
   const val GradlePlugin = "com.vanniktech:gradle-maven-publish-plugin:0.13.0"

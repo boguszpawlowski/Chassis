@@ -12,7 +12,7 @@ val commitsCount = Grgit.open(mapOf("dir" to rootDir)).log().size
 android {
   defaultConfig {
     versionCode = commitsCount
-    versionName = App.VersionName
+    versionName = "0.0.1"
   }
 }
 
