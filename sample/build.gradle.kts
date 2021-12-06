@@ -18,6 +18,7 @@ android {
 
 dependencies {
   implementation(Kotlin.StdLib)
+  implementation(project(autoModules.library))
 
   implementation(Material.Core)
 
@@ -25,11 +26,10 @@ dependencies {
   implementation(AndroidX.ConstraintLayout)
   implementation(AndroidX.ComposeActivity)
 
-  implementation(Compose.Runtime) // FIXME remove if not using compose
-  implementation(Compose.Ui) // FIXME remove if not using compose
-  implementation(Compose.Foundation) // FIXME remove if not using compose
-  implementation(Compose.FoundationLayout) // FIXME remove if not using compose
-  implementation(Compose.Material) // FIXME remove if not using compose
+  implementation(Compose.Ui)
+  implementation(Compose.Foundation)
+  implementation(Compose.FoundationLayout)
+  implementation(Compose.Material)
 
   implementation(Coroutines.Core)
   implementation(SqlDelight.AndroidDriver)
