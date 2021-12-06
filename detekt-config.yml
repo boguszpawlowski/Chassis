@@ -18,7 +18,7 @@ complexity:
     threshold: 400
   LongMethod:
     active: true
-    threshold: 20
+    threshold: 60
   LongParameterList:
     active: true
     functionThreshold: 5
@@ -163,7 +163,7 @@ naming:
   VariableNaming:
     active: true
     variablePattern: '^[a-z]+(?:[A-Z][a-z]+)*$'
-    privateVariablePattern: '^[a-z]+(?:[A-Z][a-z]+)*$'
+    privateVariablePattern: '(_)?[a-z][A-Za-z0-9]*'
 
 performance:
   active: true
