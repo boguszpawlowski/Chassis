@@ -4,8 +4,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlin.reflect.KProperty1
 
-public inline fun <T : Any> chassis(crossinline block: ChassisBuilderScope<T>.() -> T): Chassis<T> =
-  ChassisImpl(initialValue = { ChassisBuilder<T>().block() })
+public inline fun <T : Any> chassis(block: ChassisBuilderScope<T>.() -> T): Chassis<T> =
+  ChassisImpl(initialValue = ChassisBuilder<T>().block())
 
 public interface Chassis<T : Any> {
   public val state: StateFlow<T>
@@ -18,8 +18,8 @@ public interface Chassis<T : Any> {
 }
 
 @PublishedApi
-internal class ChassisImpl<T : Any>(initialValue: () -> T) : Chassis<T> {
-  private val _state = MutableStateFlow(initialValue())
+internal class ChassisImpl<T : Any>(initialValue: T) : Chassis<T> {
+  private val _state = MutableStateFlow(initialValue)
   override val state = _state
 
   override fun invoke() = state.value
