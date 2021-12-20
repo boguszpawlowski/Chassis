@@ -1,13 +1,14 @@
 package io.github.boguszpawlowski.chassis
 
-fun interface Validator<T> : (T) -> ValidationResult
+public fun interface Validator<T> : (T) -> ValidationResult
 
-sealed interface ValidationResult
-object Unspecified : ValidationResult
-object Valid : ValidationResult
-interface Invalid : ValidationResult
+public sealed interface ValidationResult
+public object Unspecified : ValidationResult
+public object Valid : ValidationResult
+public interface Invalid : ValidationResult
+public object Empty : Invalid
 
-fun notEmpty(invalid: Invalid = Empty): Validator<String> = Validator {
+public fun notEmpty(invalid: Invalid = Empty): Validator<String> = Validator {
   if (it.isNotEmpty()) {
     Valid
   } else {
@@ -15,7 +16,7 @@ fun notEmpty(invalid: Invalid = Empty): Validator<String> = Validator {
   }
 }
 
-fun shorterThan(min: Int, invalid: Invalid = Empty): Validator<String> = Validator {
+public fun shorterThan(min: Int, invalid: Invalid = Empty): Validator<String> = Validator {
   if (it.length < min) {
     Valid
   } else {
@@ -23,12 +24,10 @@ fun shorterThan(min: Int, invalid: Invalid = Empty): Validator<String> = Validat
   }
 }
 
-fun notNull(invalid: Invalid = Empty): Validator<Any?> = Validator {
+public fun notNull(invalid: Invalid = Empty): Validator<Any?> = Validator {
   if (it == null) {
     Valid
   } else {
     invalid
   }
 }
-
-object Empty : Invalid

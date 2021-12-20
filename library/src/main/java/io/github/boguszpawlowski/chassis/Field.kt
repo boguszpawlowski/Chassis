@@ -1,16 +1,16 @@
 package io.github.boguszpawlowski.chassis
 
-interface Field<T : FormModel, V : Any> {
-  val value: V?
-  val isValid: Boolean
-  val isInvalid: Boolean
-  val invalidReasons: List<Invalid>
-  fun forceValidation(state: T, validationResult: ValidationResult): T
-  fun reduce(state: T, newValue: V): T
-  operator fun invoke(): V
+public interface Field<T : Any, V : Any> {
+  public val value: V?
+  public val isValid: Boolean
+  public val isInvalid: Boolean
+  public val invalidReasons: List<Invalid>
+  public fun forceValidation(state: T, validationResult: ValidationResult): T
+  public fun reduce(state: T, newValue: V): T
+  public operator fun invoke(): V
 }
 
-internal data class FieldImpl<T : FormModel, V : Any>(
+internal data class FieldImpl<T : Any, V : Any>(
   override val value: V? = null,
   private val validators: List<Validator<V>>,
   private val reducer: Reducer<T, V>,
@@ -42,4 +42,4 @@ internal data class FieldImpl<T : FormModel, V : Any>(
   override fun invoke(): V = requireNotNull(value)
 }
 
-fun <T> Collection<Validator<T>>.validate(input: T) = map { it(input) }
+private fun <T> Collection<Validator<T>>.validate(input: T) = map { it(input) }
