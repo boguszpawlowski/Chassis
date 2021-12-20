@@ -1,13 +1,13 @@
 package io.github.boguszpawlowski.chassis
 
-typealias Reducer<T, V> = T.(Field<T, V>) -> T
+public typealias Reducer<T, V> = T.(Field<T, V>) -> T
 
-interface FieldBuilderScope<T : FormModel, V : Any> {
-  fun validators(vararg validators: Validator<V>)
-  fun reducer(block: T.(Field<T, V>) -> T)
+public interface FieldBuilderScope<T : Any, V : Any> {
+  public fun validators(vararg validators: Validator<V>)
+  public fun reducer(block: T.(Field<T, V>) -> T)
 }
 
-internal class FieldBuilder<T : FormModel, V : Any>(
+internal class FieldBuilder<T : Any, V : Any>(
   private val initialValue: V?,
 ) : FieldBuilderScope<T, V> {
   private val validators = arrayListOf<Validator<V>>()

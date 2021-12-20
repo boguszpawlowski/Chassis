@@ -18,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.boguszpawlowski.chassis.Field
-import io.github.boguszpawlowski.chassis.FormModel
 import io.github.boguszpawlowski.chassis.Invalid
 import io.github.boguszpawlowski.chassis.chassis
 import io.github.boguszpawlowski.chassis.notEmpty
@@ -39,30 +38,30 @@ class MainActivity : AppCompatActivity() {
 @Composable
 fun MainScreen(viewModel: MainViewModel = MainViewModel()) {
   MaterialTheme {
-    val fields by viewModel.formData.state.collectAsState()
+    val form by viewModel.formData.state.collectAsState()
 
     Column {
       TextField(
-        value = fields.email.value.orEmpty(),
-        isError = fields.email.isInvalid,
-        onValueChange = { viewModel.formData.update(FormData::email, it) }
+        value = form.email.value.orEmpty(),
+        isError = form.email.isInvalid,
+        onValueChange = { viewModel.formData.update(LoginForm::email, it) },
       )
       Spacer(modifier = Modifier.height(10.dp))
       TextField(
-        value = fields.login.value.orEmpty(),
-        isError = fields.login.isInvalid,
-        onValueChange = { viewModel.formData.update(FormData::login, it) },
+        value = form.login.value.orEmpty(),
+        isError = form.login.isInvalid,
+        onValueChange = { viewModel.formData.update(LoginForm::login, it) },
       )
       Spacer(modifier = Modifier.height(10.dp))
       TextField(
-        value = fields.password.value.orEmpty(),
-        isError = fields.password.isInvalid,
-        onValueChange = { viewModel.formData.update(FormData::password, it) }
+        value = form.password.value.orEmpty(),
+        isError = form.password.isInvalid,
+        onValueChange = { viewModel.formData.update(LoginForm::password, it) },
       )
       Spacer(modifier = Modifier.height(10.dp))
       Button(
-        enabled = fields.fieldsToBeValidated.all { it.isValid },
-        onClick = { viewModel.onNext() }
+        enabled = form.isValid,
+        onClick = { viewModel.onNext() },
       ) {
         Text(text = "Continue")
       }
@@ -82,8 +81,8 @@ class Register {
 class MainViewModel(
   private val register: Register = Register()
 ) : ViewModel() {
-  val formData = chassis<FormData> {
-    FormData(
+  val formData = chassis<LoginForm> {
+    LoginForm(
       email = field {
         validators(notEmpty())
         reducer { copy(email = it) }
@@ -113,18 +112,17 @@ class MainViewModel(
       )
     }
 
-    formData.forceValidation(FormData::password, TooSimplePassword)
+    formData.forceValidation(LoginForm::password, TooSimplePassword)
   }
 }
 
 object TooSimplePassword : Invalid
 
-data class FormData(
-  val login: Field<FormData, String>,
-  val email: Field<FormData, String>,
-  val password: Field<FormData, String>,
-  val marketingConsent: Field<FormData, Boolean>,
-) : FormModel {
-  override val fieldsToBeValidated: Collection<Field<FormData, *>>
-    get() = setOf(login, email, password)
+data class LoginForm(
+  val login: Field<LoginForm, String>,
+  val email: Field<LoginForm, String>,
+  val password: Field<LoginForm, String>,
+  val marketingConsent: Field<LoginForm, Boolean>,
+) {
+  val isValid: Boolean get() = login.isValid && email.isValid && password.isValid && marketingConsent.isValid
 }
