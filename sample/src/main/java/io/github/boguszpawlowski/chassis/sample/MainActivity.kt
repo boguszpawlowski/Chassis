@@ -17,9 +17,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.boguszpawlowski.chassis.Chassis
 import io.github.boguszpawlowski.chassis.Field
 import io.github.boguszpawlowski.chassis.Invalid
+import io.github.boguszpawlowski.chassis.Valid
+import io.github.boguszpawlowski.chassis.ValidationResult
+import io.github.boguszpawlowski.chassis.Validator
 import io.github.boguszpawlowski.chassis.chassis
+import io.github.boguszpawlowski.chassis.field
 import io.github.boguszpawlowski.chassis.notEmpty
 import io.github.boguszpawlowski.chassis.notNull
 import kotlinx.coroutines.launch
@@ -78,28 +83,43 @@ class Register {
   ): Result<Unit> = suspendCoroutine { it.resume(Result.success(Unit)) }
 }
 
+class ValidateLogin {
+  operator fun invoke(
+    login: String,
+  ): ValidationResult = Valid
+}
+
 class MainViewModel(
-  private val register: Register = Register()
+  private val register: Register = Register(),
+  private val validateLogin: ValidateLogin = ValidateLogin()
 ) : ViewModel() {
-  val formData = chassis<LoginForm> {
-    LoginForm(
-      email = field {
-        validators(notEmpty())
-        reducer { copy(email = it) }
-      },
-      login = field {
-        validators(notEmpty())
-        reducer { copy(login = it) }
-      },
-      password = field {
-        validators(notEmpty())
-        reducer { copy(password = it) }
-      },
-      marketingConsent = field(initialValue = false) {
-        validators(notNull())
-        reducer { copy(marketingConsent = it) }
-      },
-    )
+
+  lateinit var formData: Chassis<LoginForm>
+
+  init {
+    viewModelScope.launch {
+      formData = chassis {
+        LoginForm(
+          email = field {
+            validators(notEmpty())
+            reducer { copy(email = it) }
+          },
+          login = field {
+            validators(notEmpty(), Validator { validateLogin(it) })
+
+            reducer { copy(login = it) }
+          },
+          password = field {
+            validators(notEmpty())
+            reducer { copy(password = it) }
+          },
+          marketingConsent = field(initialValue = false) {
+            validators(notNull())
+            reducer { copy(marketingConsent = it) }
+          },
+        )
+      }
+    }
   }
 
   fun onNext() = viewModelScope.launch {

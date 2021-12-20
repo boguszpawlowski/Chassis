@@ -7,11 +7,12 @@ public interface FieldBuilderScope<T : Any, V : Any> {
   public fun reducer(block: T.(Field<T, V>) -> T)
 }
 
+@PublishedApi
 internal class FieldBuilder<T : Any, V : Any>(
   private val initialValue: V?,
 ) : FieldBuilderScope<T, V> {
   private val validators = arrayListOf<Validator<V>>()
-  private var reducer: Reducer<T, V> = { this }
+  private var reducer: Reducer<T, V>? = null
 
   override fun validators(vararg validators: Validator<V>) {
     this.validators.addAll(validators)
@@ -21,5 +22,5 @@ internal class FieldBuilder<T : Any, V : Any>(
     reducer = block
   }
 
-  fun build() = FieldImpl(initialValue, validators, reducer)
+  fun build() = FieldImpl(initialValue, validators, requireNotNull(reducer))
 }
