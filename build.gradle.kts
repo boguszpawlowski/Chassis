@@ -1,6 +1,5 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import io.gitlab.arturbosch.detekt.Detekt
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   id(DetektLib.PluginId) version DetektLib.Version
@@ -13,16 +12,12 @@ buildscript {
     google()
     mavenCentral()
     gradlePluginPortal()
-    jcenter()
   }
   dependencies {
     classpath(Android.GradlePlugin)
     classpath(Kotlin.GradlePlugin)
-    classpath(SqlDelight.Plugin)
     classpath(DetektLib.Plugin)
     classpath(GradleVersions.Plugin)
-    classpath(Firebase.CrashlyticsPlugin)
-    classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.20")
   }
 }
 
@@ -31,28 +26,6 @@ allprojects {
     mavenCentral()
     google()
     maven("https://jitpack.io")
-    jcenter()
-  }
-
-  tasks.withType<JavaCompile> {
-    sourceCompatibility = "1.8"
-    targetCompatibility = "1.8"
-  }
-
-  tasks.withType<KotlinCompile> {
-    kotlinOptions {
-      jvmTarget = "1.8"
-      languageVersion = "1.5"
-      apiVersion = "1.5"
-      freeCompilerArgs = freeCompilerArgs + listOf(
-        "-progressive",
-        "-Xopt-in=kotlin.RequiresOptIn",
-        "-Xopt-in=kotlinx.coroutines.ExperimentalCoroutinesApi",
-        "-Xskip-prerelease-check",
-        "-Xuse-experimental=kotlin.contracts.ExperimentalContracts",
-        "-Xjvm-enable-preview"
-      )
-    }
   }
 
   tasks.withType<Test> {
