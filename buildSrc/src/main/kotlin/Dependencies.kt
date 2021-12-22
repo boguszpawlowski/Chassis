@@ -125,7 +125,7 @@ object Timber {
 }
 
 object Compose {
-  const val Version = "1.0.4"
+  const val Version = "1.0.5"
   const val AccompanistVersion = "0.10.0"
 
   const val Runtime = "androidx.compose.runtime:runtime:$Version"

@@ -16,8 +16,24 @@ public fun notEmpty(invalid: Invalid = Empty): Validator<String> = Validator {
   }
 }
 
-public fun shorterThan(min: Int, invalid: Invalid = Empty): Validator<String> = Validator {
-  if (it.length < min) {
+public fun shorterThan(max: Int, invalid: Invalid = Empty): Validator<String> = Validator {
+  if (it.length < max) {
+    Valid
+  } else {
+    invalid
+  }
+}
+
+public fun longerThan(min: Int, invalid: Invalid = Empty): Validator<String> = Validator {
+  if (it.length > min) {
+    Valid
+  } else {
+    invalid
+  }
+}
+
+public fun matches(regex: Regex, invalid: Invalid = Empty): Validator<String> = Validator {
+  if (regex.matches(it)) {
     Valid
   } else {
     invalid
@@ -25,7 +41,7 @@ public fun shorterThan(min: Int, invalid: Invalid = Empty): Validator<String> = 
 }
 
 public fun notNull(invalid: Invalid = Empty): Validator<Any?> = Validator {
-  if (it == null) {
+  if (it != null) {
     Valid
   } else {
     invalid

@@ -1,12 +1,14 @@
 package io.github.boguszpawlowski.chassis.sample
 
 import android.os.Bundle
+import android.util.Patterns
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.Button
+import androidx.compose.material.Checkbox
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
 import androidx.compose.material.TextField
@@ -17,14 +19,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import io.github.boguszpawlowski.chassis.Chassis
 import io.github.boguszpawlowski.chassis.Field
 import io.github.boguszpawlowski.chassis.Invalid
-import io.github.boguszpawlowski.chassis.Valid
-import io.github.boguszpawlowski.chassis.ValidationResult
-import io.github.boguszpawlowski.chassis.Validator
 import io.github.boguszpawlowski.chassis.chassis
 import io.github.boguszpawlowski.chassis.field
+import io.github.boguszpawlowski.chassis.longerThan
+import io.github.boguszpawlowski.chassis.matches
 import io.github.boguszpawlowski.chassis.notEmpty
 import io.github.boguszpawlowski.chassis.notNull
 import kotlinx.coroutines.launch
@@ -64,6 +64,11 @@ fun MainScreen(viewModel: MainViewModel = MainViewModel()) {
         onValueChange = { viewModel.formData.update(LoginForm::password, it) },
       )
       Spacer(modifier = Modifier.height(10.dp))
+      Checkbox(
+        checked = form.marketingConsent.value ?: false,
+        onCheckedChange = { viewModel.formData.update(LoginForm::marketingConsent, it) },
+      )
+      Spacer(modifier = Modifier.height(10.dp))
       Button(
         enabled = form.isValid,
         onClick = { viewModel.onNext() },
@@ -83,43 +88,29 @@ class Register {
   ): Result<Unit> = suspendCoroutine { it.resume(Result.success(Unit)) }
 }
 
-class ValidateLogin {
-  operator fun invoke(
-    login: String,
-  ): ValidationResult = Valid
-}
-
 class MainViewModel(
   private val register: Register = Register(),
-  private val validateLogin: ValidateLogin = ValidateLogin()
 ) : ViewModel() {
 
-  lateinit var formData: Chassis<LoginForm>
-
-  init {
-    viewModelScope.launch {
-      formData = chassis {
-        LoginForm(
-          email = field {
-            validators(notEmpty())
-            reducer { copy(email = it) }
-          },
-          login = field {
-            validators(notEmpty(), Validator { validateLogin(it) })
-
-            reducer { copy(login = it) }
-          },
-          password = field {
-            validators(notEmpty())
-            reducer { copy(password = it) }
-          },
-          marketingConsent = field(initialValue = false) {
-            validators(notNull())
-            reducer { copy(marketingConsent = it) }
-          },
-        )
-      }
-    }
+  val formData = chassis<LoginForm> {
+    LoginForm(
+      email = field {
+        validators(notEmpty(), matches(Patterns.EMAIL_ADDRESS.toRegex()))
+        reducer { copy(email = it) }
+      },
+      login = field {
+        validators(notEmpty())
+        reducer { copy(login = it) }
+      },
+      password = field {
+        validators(notEmpty(), longerThan(8))
+        reducer { copy(password = it) }
+      },
+      marketingConsent = field {
+        validators(notNull())
+        reducer { copy(marketingConsent = it) }
+      },
+    )
   }
 
   fun onNext() = viewModelScope.launch {
@@ -144,5 +135,6 @@ data class LoginForm(
   val password: Field<LoginForm, String>,
   val marketingConsent: Field<LoginForm, Boolean>,
 ) {
-  val isValid: Boolean get() = login.isValid && email.isValid && password.isValid && marketingConsent.isValid
+  val isValid: Boolean
+    get() = login.isValid && email.isValid && password.isValid && marketingConsent.isValid
 }
