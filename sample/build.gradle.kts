@@ -35,5 +35,4 @@ dependencies {
   implementation(AndroidX.Activity)
 
   debugImplementation(Debug.LeakCanary)
-  debugImplementation(Debug.FoQA)
 }
