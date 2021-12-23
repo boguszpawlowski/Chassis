@@ -5,6 +5,9 @@ plugins {
   id(DetektLib.PluginId) version DetektLib.Version
   id(GradleVersions.PluginId) version GradleVersions.Version
   id(GrGit.PluginId) version GrGit.Version
+  id(Shipkit.AutoVersion.PluginId) version Shipkit.AutoVersion.Version
+  id(Shipkit.Changelog.PluginId) version Shipkit.Changelog.Version
+  id(Shipkit.GithubRelease.PluginId) version Shipkit.GithubRelease.Version
 }
 
 buildscript {
@@ -16,8 +19,10 @@ buildscript {
   dependencies {
     classpath(Android.GradlePlugin)
     classpath(Kotlin.GradlePlugin)
+    classpath(Kotlin.DokkaGradlePlugin)
     classpath(DetektLib.Plugin)
     classpath(GradleVersions.Plugin)
+    classpath(MavenPublish.GradlePlugin)
   }
 }
 
@@ -25,7 +30,6 @@ allprojects {
   repositories {
     mavenCentral()
     google()
-    maven("https://jitpack.io")
   }
 
   tasks.withType<Test> {

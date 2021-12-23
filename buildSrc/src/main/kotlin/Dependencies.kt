@@ -1,7 +1,7 @@
 @file:Suppress("ObjectPropertyNaming", "ClassNaming", "UnderscoresInNumericLiterals")
 object MavenPublish {
   const val PluginId = "com.vanniktech.maven.publish"
-  const val GradlePlugin = "com.vanniktech:gradle-maven-publish-plugin:0.13.0"
+  const val GradlePlugin = "com.vanniktech:gradle-maven-publish-plugin:0.18.0"
 }
 
 object AndroidSdk {
@@ -54,33 +54,25 @@ object Coroutines {
   const val Core = "org.jetbrains.kotlinx:kotlinx-coroutines-core:$Version"
 }
 
-object SqlDelight {
-  const val Version = "1.5.2"
+object Shipkit {
+  object AutoVersion {
+    const val Version = "1.1.19"
 
-  const val PluginId = "com.squareup.sqldelight"
-  const val Plugin = "com.squareup.sqldelight:gradle-plugin:$Version"
+    const val PluginId = "org.shipkit.shipkit-auto-version"
+  }
 
-  const val AndroidDriver = "com.squareup.sqldelight:android-driver:$Version"
-  const val JdbcDriver = "org.xerial:sqlite-jdbc:3.34.0"
-  const val Driver = "com.squareup.sqldelight:sqlite-driver:$Version"
+  object Changelog {
+    const val Version = "1.1.15"
 
-  const val CoroutineExtensions = "com.squareup.sqldelight:coroutines-extensions:$Version"
+    const val PluginId = "org.shipkit.shipkit-changelog"
+  }
+
+  object GithubRelease {
+    const val Version = "1.1.15"
+
+    const val PluginId = "org.shipkit.shipkit-github-release"
+  }
 }
-
-object Retrofit {
-  const val Version = "2.9.0"
-
-  const val Core = "com.squareup.retrofit2:retrofit:$Version"
-  const val ConverterKotlinxSerialization = "com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.8.0"
-}
-
-object KotlinXSerialization {
-  const val Version = "1.3.0"
-
-  const val Core = "org.jetbrains.kotlinx:kotlinx-serialization-core:$Version"
-  const val Json = "org.jetbrains.kotlinx:kotlinx-serialization-json:$Version"
-}
-
 object AndroidX {
   const val Version = "1.0.0"
   const val LifecycleVersion = "2.2.0"
@@ -89,10 +81,6 @@ object AndroidX {
   const val Activity = "androidx.activity:activity-ktx:1.3.1"
   const val ConstraintLayout = "androidx.constraintlayout:constraintlayout:2.1.1"
   const val ComposeActivity = "androidx.activity:activity-compose:1.3.0"
-  const val Lifecycle = "androidx.lifecycle:lifecycle-extensions:$LifecycleVersion"
-  const val LifecycleRuntime = "androidx.lifecycle:lifecycle-runtime-ktx:$LifecycleVersion"
-  const val LifecycleViewModel = "androidx.lifecycle:lifecycle-viewmodel-ktx:$LifecycleVersion"
-  const val Startup = "androidx.startup:startup-runtime:1.1.0"
   const val ComposeLifecycle = "androidx.lifecycle:lifecycle-viewmodel-compose:1.0.0-alpha03"
 }
 
@@ -110,15 +98,6 @@ object DetektLib {
   const val Cli = "io.gitlab.arturbosch.detekt:detekt-cli:$Version"
 }
 
-object Koin {
-  const val Version = "2.2.2"
-
-  const val Core = "org.koin:koin-core:$Version"
-  const val Android = "org.koin:koin-android:$Version"
-  const val ViewModel = "org.koin:koin-androidx-viewmodel:$Version"
-  const val Compose = "org.koin:koin-androidx-compose:$Version"
-}
-
 object Timber {
   const val Version = "4.7.1"
   const val Core = "com.jakewharton.timber:timber:$Version"
@@ -128,8 +107,6 @@ object Compose {
   const val Version = "1.0.5"
   const val AccompanistVersion = "0.10.0"
 
-  const val Runtime = "androidx.compose.runtime:runtime:$Version"
-  const val Compiler = "androidx.compose.compiler:compiler:$Version"
   const val Foundation = "androidx.compose.foundation:foundation:$Version"
   const val FoundationLayout = "androidx.compose.foundation:foundation-layout:$Version"
   const val Material = "androidx.compose.material:material:$Version"
@@ -140,21 +117,6 @@ object Compose {
   const val Navigation = "androidx.navigation:navigation-compose:2.4.0-alpha02"
   const val Testing = "androidx.compose.ui:ui-test:$Version"
   const val JunitTesting = "androidx.compose.ui:ui-test-junit4:$Version"
-}
-
-object Firebase {
-  const val CrashlyticsPlugin = "com.google.firebase:firebase-crashlytics-gradle:2.7.1"
-  const val GoogleServicesPlugin = "com.google.gms:google-services:4.3.5"
-  const val AppDistributionPlugin = "com.google.firebase:firebase-appdistribution-gradle:1.3.1"
-
-  const val CrashlyticsPluginId = "com.google.firebase.crashlytics"
-  const val GoogleServicesPluginId = "com.google.gms.google-services"
-  const val AppDistributionPluginId = "com.google.firebase.appdistribution"
-
-  const val Bom = "com.google.firebase:firebase-bom:28.1.0"
-
-  const val Analytics = "com.google.firebase:firebase-analytics-ktx"
-  const val Crashlytics = "com.google.firebase:firebase-crashlytics-ktx"
 }
 
 object Debug {
