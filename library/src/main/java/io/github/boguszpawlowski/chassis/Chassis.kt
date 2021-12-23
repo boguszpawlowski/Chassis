@@ -15,10 +15,14 @@ public interface Chassis<T : Any> {
     field: KProperty1<T, Field<T, V>>,
     validationResult: ValidationResult
   )
+
+  public fun reset()
 }
 
 @PublishedApi
-internal class ChassisImpl<T : Any>(initialValue: T) : Chassis<T> {
+internal class ChassisImpl<T : Any>(
+  private val initialValue: T
+) : Chassis<T> {
   private val _state = MutableStateFlow(initialValue)
   override val state = _state
 
@@ -35,5 +39,9 @@ internal class ChassisImpl<T : Any>(initialValue: T) : Chassis<T> {
   ) {
     val newState = field.get(state.value).forceValidation(state.value, validationResult)
     _state.value = newState
+  }
+
+  override fun reset() {
+    _state.value = initialValue
   }
 }

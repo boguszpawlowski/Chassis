@@ -43,30 +43,30 @@ class MainActivity : AppCompatActivity() {
 @Composable
 fun MainScreen(viewModel: MainViewModel = MainViewModel()) {
   MaterialTheme {
-    val form by viewModel.formData.state.collectAsState()
+    val form by viewModel.chassis.state.collectAsState()
 
     Column {
       TextField(
         value = form.email.value.orEmpty(),
         isError = form.email.isInvalid,
-        onValueChange = { viewModel.formData.update(LoginForm::email, it) },
+        onValueChange = { viewModel.chassis.update(LoginForm::email, it) },
       )
       Spacer(modifier = Modifier.height(10.dp))
       TextField(
         value = form.login.value.orEmpty(),
         isError = form.login.isInvalid,
-        onValueChange = { viewModel.formData.update(LoginForm::login, it) },
+        onValueChange = { viewModel.chassis.update(LoginForm::login, it) },
       )
       Spacer(modifier = Modifier.height(10.dp))
       TextField(
         value = form.password.value.orEmpty(),
         isError = form.password.isInvalid,
-        onValueChange = { viewModel.formData.update(LoginForm::password, it) },
+        onValueChange = { viewModel.chassis.update(LoginForm::password, it) },
       )
       Spacer(modifier = Modifier.height(10.dp))
       Checkbox(
         checked = form.marketingConsent.value ?: false,
-        onCheckedChange = { viewModel.formData.update(LoginForm::marketingConsent, it) },
+        onCheckedChange = { viewModel.chassis.update(LoginForm::marketingConsent, it) },
       )
       Spacer(modifier = Modifier.height(10.dp))
       Button(
@@ -74,6 +74,12 @@ fun MainScreen(viewModel: MainViewModel = MainViewModel()) {
         onClick = { viewModel.onNext() },
       ) {
         Text(text = "Continue")
+      }
+      Spacer(modifier = Modifier.height(10.dp))
+      Button(
+        onClick = { viewModel.chassis.reset() },
+      ) {
+        Text(text = "Reset")
       }
     }
   }
@@ -92,7 +98,7 @@ class MainViewModel(
   private val register: Register = Register(),
 ) : ViewModel() {
 
-  val formData = chassis<LoginForm> {
+  val chassis = chassis<LoginForm> {
     LoginForm(
       email = field {
         validators(notEmpty(), matches(Patterns.EMAIL_ADDRESS.toRegex()))
@@ -114,7 +120,7 @@ class MainViewModel(
   }
 
   fun onNext() = viewModelScope.launch {
-    with(formData()) {
+    with(chassis()) {
       register(
         email = email(),
         login = login(),
@@ -123,7 +129,7 @@ class MainViewModel(
       )
     }
 
-    formData.forceValidation(LoginForm::password, TooSimplePassword)
+    chassis.forceValidation(LoginForm::password, TooSimplePassword)
   }
 }
 
