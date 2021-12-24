@@ -6,9 +6,9 @@ public sealed interface ValidationResult
 public object Unspecified : ValidationResult
 public object Valid : ValidationResult
 public interface Invalid : ValidationResult
-public object Empty : Invalid
+public object DefaultInvalid : Invalid
 
-public fun notEmpty(invalid: Invalid = Empty): Validator<String> = Validator {
+public fun notEmpty(invalid: Invalid = DefaultInvalid): Validator<String> = Validator {
   if (it.isNotEmpty()) {
     Valid
   } else {
@@ -16,7 +16,7 @@ public fun notEmpty(invalid: Invalid = Empty): Validator<String> = Validator {
   }
 }
 
-public fun shorterThan(max: Int, invalid: Invalid = Empty): Validator<String> = Validator {
+public fun shorterThan(max: Int, invalid: Invalid = DefaultInvalid): Validator<String> = Validator {
   if (it.length < max) {
     Valid
   } else {
@@ -24,7 +24,7 @@ public fun shorterThan(max: Int, invalid: Invalid = Empty): Validator<String> = 
   }
 }
 
-public fun longerThan(min: Int, invalid: Invalid = Empty): Validator<String> = Validator {
+public fun longerThan(min: Int, invalid: Invalid = DefaultInvalid): Validator<String> = Validator {
   if (it.length > min) {
     Valid
   } else {
@@ -32,7 +32,7 @@ public fun longerThan(min: Int, invalid: Invalid = Empty): Validator<String> = V
   }
 }
 
-public fun matches(regex: Regex, invalid: Invalid = Empty): Validator<String> = Validator {
+public fun matches(regex: Regex, invalid: Invalid = DefaultInvalid): Validator<String> = Validator {
   if (regex.matches(it)) {
     Valid
   } else {
@@ -40,8 +40,16 @@ public fun matches(regex: Regex, invalid: Invalid = Empty): Validator<String> = 
   }
 }
 
-public fun notNull(invalid: Invalid = Empty): Validator<Any?> = Validator {
+public fun notNull(invalid: Invalid = DefaultInvalid): Validator<Any?> = Validator {
   if (it != null) {
+    Valid
+  } else {
+    invalid
+  }
+}
+
+public fun required(invalid: Invalid = DefaultInvalid): Validator<Boolean?> = Validator {
+  if (it == true) {
     Valid
   } else {
     invalid

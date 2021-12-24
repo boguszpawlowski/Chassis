@@ -26,7 +26,8 @@ import io.github.boguszpawlowski.chassis.field
 import io.github.boguszpawlowski.chassis.longerThan
 import io.github.boguszpawlowski.chassis.matches
 import io.github.boguszpawlowski.chassis.notEmpty
-import io.github.boguszpawlowski.chassis.notNull
+import io.github.boguszpawlowski.chassis.reducer
+import io.github.boguszpawlowski.chassis.required
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
 import kotlin.coroutines.suspendCoroutine
@@ -113,7 +114,7 @@ class MainViewModel(
         reducer { copy(password = it) }
       },
       marketingConsent = field {
-        validators(notNull())
+        validators(required())
         reducer { copy(marketingConsent = it) }
       },
     )
