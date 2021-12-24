@@ -13,7 +13,7 @@ public interface Chassis<T : Any> {
   public fun <V : Any> update(field: KProperty1<T, Field<T, V>>, newValue: V)
   public fun <V : Any> forceValidation(
     field: KProperty1<T, Field<T, V>>,
-    validationResult: ValidationResult
+    validationResult: ValidationResult,
   )
 
   public fun reset()
@@ -35,7 +35,7 @@ internal class ChassisImpl<T : Any>(
 
   override fun <V : Any> forceValidation(
     field: KProperty1<T, Field<T, V>>,
-    validationResult: ValidationResult
+    validationResult: ValidationResult,
   ) {
     val newState = field.get(state.value).forceValidation(state.value, validationResult)
     _state.value = newState
