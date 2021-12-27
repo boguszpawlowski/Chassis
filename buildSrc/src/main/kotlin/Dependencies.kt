@@ -15,7 +15,7 @@ object Kotlin {
   const val Version = "1.5.31"
 
   const val GradlePlugin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$Version"
-  const val DokkaGradlePlugin = "org.jetbrains.dokka:dokka-gradle-plugin:1.4.32"
+  const val DokkaGradlePlugin = "org.jetbrains.dokka:dokka-gradle-plugin:$Version"
 
   const val StdLib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$Version"
   const val SafeArgsPlugin = "androidx.navigation:navigation-safe-args-gradle-plugin:2.2.0"
@@ -89,7 +89,7 @@ object Material {
 }
 
 object DetektLib {
-  const val Version = "1.18.1"
+  const val Version = "1.19.0"
 
   const val PluginId = "io.gitlab.arturbosch.detekt"
   const val Plugin = "io.gitlab.arturbosch.detekt:detekt-gradle-plugin:$Version"
@@ -125,7 +125,7 @@ object Debug {
 }
 
 object Kotest {
-  const val Version = "4.6.0"
+  const val Version = "5.0.3"
 
   const val RunnerJunit5 = "io.kotest:kotest-runner-junit5-jvm:$Version"
 
@@ -137,7 +137,7 @@ object JUnit {
 }
 
 object CoroutineTest {
-  const val Turbine = "app.cash.turbine:turbine:0.4.1"
+  const val Turbine = "app.cash.turbine:turbine:0.7.0"
 }
 
 object AndroidXTest {
