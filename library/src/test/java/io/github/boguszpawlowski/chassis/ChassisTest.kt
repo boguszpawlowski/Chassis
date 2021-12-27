@@ -10,24 +10,7 @@ import kotlin.time.ExperimentalTime
 @OptIn(ExperimentalTime::class)
 internal class ChassisTest : ShouldSpec({
 
-  val chassis = chassis<LoginForm> {
-    LoginForm(
-      email = field {
-        reducer { copy(email = it) }
-      },
-      login = field {
-        validators(notEmpty(TestInvalidCause))
-        reducer { copy(login = it) }
-      },
-      password = field {
-        validators(longerThan(8, TestInvalidCause), matches("\\d+".toRegex(), TestInvalidCause))
-        reducer { copy(password = it) }
-      },
-      marketingConsent = field {
-        reducer { copy(marketingConsent = it) }
-      }
-    )
-  }
+  val chassis = testChassis()
 
   afterEach {
     chassis.reset()
@@ -145,12 +128,3 @@ internal class ChassisTest : ShouldSpec({
     }
   }
 })
-
-internal data class LoginForm(
-  val email: Field<LoginForm, String>,
-  val login: Field<LoginForm, String>,
-  val password: Field<LoginForm, String>,
-  val marketingConsent: Field<LoginForm, Boolean>,
-)
-
-internal object TestInvalidCause : Invalid
