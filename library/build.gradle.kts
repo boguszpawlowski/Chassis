@@ -11,6 +11,10 @@ kotlin {
 
 dependencies {
   implementation(Coroutines.Core)
+
+  testImplementation(Kotest.RunnerJunit5)
+  testImplementation(Kotest.Assertions)
+  testImplementation(CoroutineTest.Turbine)
 }
 
 plugins.withId("com.vanniktech.maven.publish") {
