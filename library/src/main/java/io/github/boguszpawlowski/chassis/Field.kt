@@ -1,16 +1,16 @@
 package io.github.boguszpawlowski.chassis
 
-public interface Field<T : Any, V : Any> {
+public interface Field<T : Any, V : Any?> {
   public val value: V?
   public val isValid: Boolean
   public val isInvalid: Boolean
   public val invalidReasons: List<Invalid>
   public fun forceValidation(state: T, validationResult: ValidationResult): T
-  public fun reduce(state: T, newValue: V): T
+  public fun reduce(state: T, newValue: V?): T
   public operator fun invoke(): V
 }
 
-internal data class FieldImpl<T : Any, V : Any>(
+internal data class FieldImpl<T : Any, V : Any?>(
   override val value: V? = null,
   private val validators: List<Validator<V>>,
   private val reducer: Reducer<T, V>,
@@ -18,7 +18,7 @@ internal data class FieldImpl<T : Any, V : Any>(
 ) : Field<T, V> {
 
   private val validationResults: List<ValidationResult>
-    get() = (value?.let { validators.validate(it) } ?: listOf(Unspecified)) + forcedValidation
+    get() = (value.onCorrectType(::validate) ?: listOf(Unspecified)) + forcedValidation
 
   override val isValid: Boolean
     get() = validationResults.all { it is Valid }
@@ -34,12 +34,14 @@ internal data class FieldImpl<T : Any, V : Any>(
     return reducer.invoke(state, newField)
   }
 
-  override fun reduce(state: T, newValue: V): T {
+  override fun reduce(state: T, newValue: V?): T {
     val newField = copy(value = newValue, forcedValidation = emptyList())
-    return reducer.invoke(state, newField)
+    return reducer(state, newField)
   }
 
-  override fun invoke(): V = requireNotNull(value)
-}
+  override fun invoke(): V = value as V
 
-private fun <T> Collection<Validator<T>>.validate(input: T) = map { it(input) }
+  private fun validate(value: V) = validators.map { it(value) }
+
+  private inline fun <R> V?.onCorrectType(block: (V) -> R): R? = (this as? V)?.let(block)
+}
