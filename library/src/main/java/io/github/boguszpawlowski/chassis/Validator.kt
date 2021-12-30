@@ -8,37 +8,74 @@ public object Valid : ValidationResult
 public interface Invalid : ValidationResult
 public object DefaultInvalid : Invalid
 
-public fun notEmpty(invalid: Invalid = DefaultInvalid): Validator<String> = Validator {
-  if (it.isNotEmpty()) {
+@Suppress("NOTHING_TO_INLINE")
+public inline infix fun <T> Validator<T>.or(other: Validator<T>): Validator<T> = Validator {
+  if (this(it) == Valid) {
+    Valid
+  } else {
+    other(it)
+  }
+}
+
+@Suppress("NOTHING_TO_INLINE")
+public inline infix fun <T> Validator<T>.and(other: Validator<T>): Validator<T> = Validator {
+  val result = this(it)
+  if (result == Valid) {
+    other(it)
+  } else {
+    result
+  }
+}
+
+public fun notEmpty(invalid: Invalid = DefaultInvalid): Validator<String?> = Validator {
+  if (it.isNullOrEmpty().not()) {
     Valid
   } else {
     invalid
   }
 }
 
-public fun shorterThan(max: Int, invalid: Invalid = DefaultInvalid): Validator<String> = Validator {
-  if (it.length < max) {
+public fun shorterThan(max: Int, invalid: Invalid = DefaultInvalid): Validator<String?> =
+  Validator {
+    if (it.orEmpty().length < max) {
+      Valid
+    } else {
+      invalid
+    }
+  }
+
+public fun longerThan(min: Int, invalid: Invalid = DefaultInvalid): Validator<String?> = Validator {
+  if (it.orEmpty().length > min) {
     Valid
   } else {
     invalid
   }
 }
 
-public fun longerThan(min: Int, invalid: Invalid = DefaultInvalid): Validator<String> = Validator {
-  if (it.length > min) {
+public fun exactly(length: Int, invalid: Invalid = DefaultInvalid): Validator<String?> = Validator {
+  if (it.orEmpty().length == length) {
     Valid
   } else {
     invalid
   }
 }
 
-public fun matches(regex: Regex, invalid: Invalid = DefaultInvalid): Validator<String> = Validator {
-  if (regex.matches(it)) {
+public fun <T> isNull(invalid: Invalid = DefaultInvalid): Validator<T?> = Validator {
+  if (it == null) {
     Valid
   } else {
     invalid
   }
 }
+
+public fun matches(regex: Regex, invalid: Invalid = DefaultInvalid): Validator<String?> =
+  Validator {
+    if (regex.matches(it.orEmpty())) {
+      Valid
+    } else {
+      invalid
+    }
+  }
 
 public fun notNull(invalid: Invalid = DefaultInvalid): Validator<Any?> = Validator {
   if (it != null) {

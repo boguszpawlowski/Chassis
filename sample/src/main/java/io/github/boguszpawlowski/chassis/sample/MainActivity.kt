@@ -21,11 +21,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.boguszpawlowski.chassis.Field
 import io.github.boguszpawlowski.chassis.Invalid
+import io.github.boguszpawlowski.chassis.and
 import io.github.boguszpawlowski.chassis.chassis
+import io.github.boguszpawlowski.chassis.exactly
 import io.github.boguszpawlowski.chassis.field
+import io.github.boguszpawlowski.chassis.isNull
 import io.github.boguszpawlowski.chassis.longerThan
 import io.github.boguszpawlowski.chassis.matches
 import io.github.boguszpawlowski.chassis.notEmpty
+import io.github.boguszpawlowski.chassis.or
 import io.github.boguszpawlowski.chassis.reducer
 import io.github.boguszpawlowski.chassis.required
 import kotlinx.coroutines.launch
@@ -50,19 +54,34 @@ fun MainScreen(viewModel: MainViewModel = MainViewModel()) {
       TextField(
         value = form.email.value.orEmpty(),
         isError = form.email.isInvalid,
+        label = { Text(text = "Email") },
         onValueChange = { viewModel.chassis.update(LoginForm::email, it) },
       )
       Spacer(modifier = Modifier.height(10.dp))
       TextField(
         value = form.login.value.orEmpty(),
         isError = form.login.isInvalid,
+        label = { Text(text = "Login") },
         onValueChange = { viewModel.chassis.update(LoginForm::login, it) },
       )
       Spacer(modifier = Modifier.height(10.dp))
       TextField(
         value = form.password.value.orEmpty(),
         isError = form.password.isInvalid,
+        label = { Text(text = "Password") },
         onValueChange = { viewModel.chassis.update(LoginForm::password, it) },
+      )
+      Spacer(modifier = Modifier.height(10.dp))
+      TextField(
+        value = form.phoneNumber.value.orEmpty(),
+        isError = form.phoneNumber.isInvalid,
+        label = { Text(text = "Phone Number (optional)") },
+        onValueChange = {
+          viewModel.chassis.update(
+            field = LoginForm::phoneNumber,
+            newValue = it.takeUnless { it.isEmpty() },
+          )
+        },
       )
       Spacer(modifier = Modifier.height(10.dp))
       Checkbox(
@@ -87,11 +106,13 @@ fun MainScreen(viewModel: MainViewModel = MainViewModel()) {
 }
 
 class Register {
+  @Suppress("LongParameterList")
   suspend operator fun invoke(
     email: String,
     login: String,
     password: String,
     marketingConsent: Boolean,
+    phoneNumber: String?,
   ): Result<Unit> = suspendCoroutine { it.resume(Result.success(Unit)) }
 }
 
@@ -117,6 +138,10 @@ class MainViewModel(
         validators(required())
         reducer { copy(marketingConsent = it) }
       },
+      phoneNumber = field {
+        validators(exactly(9) and matches("\\d+".toRegex()) or isNull())
+        reducer { copy(phoneNumber = it) }
+      }
     )
   }
 
@@ -127,6 +152,7 @@ class MainViewModel(
         login = login(),
         password = password(),
         marketingConsent = marketingConsent(),
+        phoneNumber = phoneNumber(),
       )
     }
 
@@ -141,7 +167,9 @@ data class LoginForm(
   val email: Field<LoginForm, String>,
   val password: Field<LoginForm, String>,
   val marketingConsent: Field<LoginForm, Boolean>,
+  val phoneNumber: Field<LoginForm, String?>,
 ) {
   val isValid: Boolean
-    get() = login.isValid && email.isValid && password.isValid && marketingConsent.isValid
+    @Suppress("MaxLineLength")
+    get() = login.isValid && email.isValid && password.isValid && marketingConsent.isValid && phoneNumber.isValid
 }
