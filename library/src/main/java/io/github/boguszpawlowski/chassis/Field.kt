@@ -14,6 +14,7 @@ internal data class FieldImpl<T : Any, V : Any?>(
   override val value: V? = null,
   private val validators: List<Validator<V>>,
   private val reducer: Reducer<T, V>,
+  private val isOptional: Boolean,
   private val forcedValidation: List<ValidationResult> = emptyList()
 ) : Field<T, V> {
 
@@ -41,7 +42,14 @@ internal data class FieldImpl<T : Any, V : Any?>(
 
   override fun invoke(): V = value as V
 
-  private fun validate(value: V) = validators.map { it(value) }
+  private fun validate(value: V): List<ValidationResult> {
+    return validators.map { it(value) }
+  }
 
-  private inline fun <R> V?.onCorrectType(block: (V) -> R): R? = (this as? V)?.let(block)
+  private inline fun <T : Any?, R> T?.onCorrectType(block: (T) -> R): R? =
+    if (this != null || isOptional) {
+      block(this as T)
+    } else {
+      null
+    }
 }
