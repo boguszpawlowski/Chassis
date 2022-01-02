@@ -19,7 +19,7 @@ internal data class FieldImpl<T : Any, V : Any?>(
 ) : Field<T, V> {
 
   private val validationResults: List<ValidationResult>
-    get() = (value.onCorrectType(::validate) ?: listOf(Unspecified)) + forcedValidation
+    get() = validate(value) + forcedValidation
 
   override val isValid: Boolean
     get() = validationResults.all { it is Valid }
@@ -40,16 +40,11 @@ internal data class FieldImpl<T : Any, V : Any?>(
     return reducer(state, newField)
   }
 
-  override fun invoke(): V = value as V
+  override fun invoke(): V = if (isOptional) value as V else checkNotNull(value)
 
-  private fun validate(value: V): List<ValidationResult> {
-    return validators.map { it(value) }
-  }
+  private fun validate(value: V?): List<ValidationResult> =
+    performValidation(value, fallback = if (isOptional) Valid else Unspecified)
 
-  private inline fun <T : Any?, R> T?.onCorrectType(block: (T) -> R): R? =
-    if (this != null || isOptional) {
-      block(this as T)
-    } else {
-      null
-    }
+  private fun performValidation(value: V?, fallback: ValidationResult): List<ValidationResult> =
+    value?.let { nonNullValue -> validators.map { it(nonNullValue) } } ?: listOf(fallback)
 }

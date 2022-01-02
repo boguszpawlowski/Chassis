@@ -2,12 +2,11 @@ package io.github.boguszpawlowski.chassis
 
 import app.cash.turbine.test
 import io.kotest.assertions.asClue
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import kotlinx.coroutines.flow.map
-import kotlin.time.ExperimentalTime
 
-@OptIn(ExperimentalTime::class)
 internal class ChassisTest : ShouldSpec({
 
   val chassis = testChassis()
@@ -50,6 +49,11 @@ internal class ChassisTest : ShouldSpec({
             it.password.isInvalid shouldBe false
             it.marketingConsent.isInvalid shouldBe false
           }
+        }
+      }
+      should("throw exception on invocation") {
+        shouldThrow<IllegalStateException> {
+          chassis().email()
         }
       }
     }
@@ -159,6 +163,10 @@ internal class ChassisTest : ShouldSpec({
             it.invalidReasons shouldBe listOf(TestInvalidCause)
           }
         }
+      }
+      should("not throw exception on invocation") {
+        chassis.update(LoginForm::phoneNumber, null)
+        chassis().phoneNumber()
       }
     }
   }

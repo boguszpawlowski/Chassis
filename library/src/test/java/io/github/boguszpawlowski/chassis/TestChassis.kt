@@ -1,10 +1,12 @@
 package io.github.boguszpawlowski.chassis
 
+@Suppress("LongParameterList")
 internal fun testChassis(
   initialEmail: String? = null,
   initialLogin: String? = null,
   initialPassword: String? = null,
   initialMarketingConsent: Boolean? = null,
+  initialPhoneNumber: String? = "123123123",
 ) = chassis<LoginForm> {
   LoginForm(
     email = field(initialEmail) {
@@ -21,12 +23,10 @@ internal fun testChassis(
     marketingConsent = field(initialMarketingConsent) {
       reducer { copy(marketingConsent = it) }
     },
-    phoneNumber = field("123123123") {
+    phoneNumber = field(initialPhoneNumber) {
       validators(
-        exactly(length = 9, invalid = TestInvalidCause) and matches(
-          regex = "\\d+".toRegex(),
-          invalid = TestInvalidCause
-        ) or isNull(invalid = TestInvalidCause)
+        exactly(length = 9, invalid = TestInvalidCause),
+        matches(regex = "\\d+".toRegex(), invalid = TestInvalidCause),
       )
       reducer { copy(phoneNumber = it) }
     }

@@ -1,5 +1,6 @@
 import com.github.benmanes.gradle.versions.updates.DependencyUpdatesTask
 import io.gitlab.arturbosch.detekt.Detekt
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
   id(DetektLib.PluginId) version DetektLib.Version
@@ -37,6 +38,10 @@ allprojects {
     testLogging {
       events("passed", "skipped", "failed")
     }
+  }
+
+  tasks.withType<KotlinCompile> {
+    kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
   }
 }
 
