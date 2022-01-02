@@ -60,14 +60,6 @@ public fun exactly(length: Int, invalid: Invalid = DefaultInvalid): Validator<St
   }
 }
 
-public fun <T> isNull(invalid: Invalid = DefaultInvalid): Validator<T?> = Validator {
-  if (it == null) {
-    Valid
-  } else {
-    invalid
-  }
-}
-
 public fun matches(regex: Regex, invalid: Invalid = DefaultInvalid): Validator<String?> =
   Validator {
     if (regex.matches(it.orEmpty())) {

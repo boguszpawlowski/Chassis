@@ -10,7 +10,7 @@ public inline fun <T : Any> chassis(block: ChassisBuilderScope<T>.() -> T): Chas
 public interface Chassis<T : Any> {
   public val state: StateFlow<T>
   public operator fun invoke(): T
-  public fun <V : Any?> update(field: KProperty1<T, Field<T, V>>, newValue: V?)
+  public fun <V : Any?> update(field: KProperty1<T, Field<T, V>>, newValue: V)
   public fun <V : Any?> forceValidation(
     field: KProperty1<T, Field<T, V>>,
     validationResult: ValidationResult,
@@ -28,7 +28,7 @@ internal class ChassisImpl<T : Any>(
 
   override fun invoke() = state.value
 
-  override fun <V : Any?> update(field: KProperty1<T, Field<T, V>>, newValue: V?) {
+  override fun <V : Any?> update(field: KProperty1<T, Field<T, V>>, newValue: V) {
     val newState = field.get(state.value).reduce(state.value, newValue)
     _state.value = newState
   }

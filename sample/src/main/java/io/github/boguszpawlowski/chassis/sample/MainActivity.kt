@@ -21,15 +21,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import io.github.boguszpawlowski.chassis.Field
 import io.github.boguszpawlowski.chassis.Invalid
-import io.github.boguszpawlowski.chassis.and
 import io.github.boguszpawlowski.chassis.chassis
 import io.github.boguszpawlowski.chassis.exactly
 import io.github.boguszpawlowski.chassis.field
-import io.github.boguszpawlowski.chassis.isNull
 import io.github.boguszpawlowski.chassis.longerThan
 import io.github.boguszpawlowski.chassis.matches
 import io.github.boguszpawlowski.chassis.notEmpty
-import io.github.boguszpawlowski.chassis.or
 import io.github.boguszpawlowski.chassis.reducer
 import io.github.boguszpawlowski.chassis.required
 import kotlinx.coroutines.launch
@@ -139,7 +136,7 @@ class MainViewModel(
         reducer { copy(marketingConsent = it) }
       },
       phoneNumber = field {
-        validators(exactly(9) and matches("\\d+".toRegex()) or isNull())
+        validators(exactly(9), matches("\\d+".toRegex()))
         reducer { copy(phoneNumber = it) }
       }
     )

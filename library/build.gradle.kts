@@ -7,6 +7,14 @@ plugins {
 
 kotlin {
   explicitApi()
+
+  target {
+    compilations.all {
+      kotlinOptions {
+        freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.time.ExperimentalTime"
+      }
+    }
+  }
 }
 
 dependencies {
