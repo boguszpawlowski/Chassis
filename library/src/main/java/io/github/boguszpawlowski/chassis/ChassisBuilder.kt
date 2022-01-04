@@ -1,5 +1,8 @@
 package io.github.boguszpawlowski.chassis
 
+import io.github.boguszpawlowski.chassis.ValidationStrategy.AsOptional
+import io.github.boguszpawlowski.chassis.ValidationStrategy.AsRequired
+
 @ChassisDslMarker
 public interface ChassisBuilderScope<T : Any>
 
@@ -11,8 +14,8 @@ public inline fun <T : Any, reified V : Any?> ChassisBuilderScope<T>.field(
   block: FieldBuilderScope<T, V>.() -> Reducer<T, V>,
 ): Field<T, V> {
   val builder = FieldBuilder<T, V>(
-    isOptional = isNullable<V>(),
     initialValue = initialValue,
+    validationStrategy = if (isNullable<V>()) AsOptional else AsRequired,
   )
   val reducer = builder.block()
   return builder.build(reducer)

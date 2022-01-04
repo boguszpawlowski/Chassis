@@ -1,9 +1,13 @@
 # Chassis
+## A lightweight Kotlin library for a form state management and field validation.
 
+![Github Actions](https://github.com/boguszpawlowski/chassis/actions/workflows/check.yml/badge.svg)
+[<img src="https://img.shields.io/maven-central/v/io.github.boguszpawlowski.chassis/chassis.svg?label=release%20version"/>](https://search.maven.org/search?q=g:io.github.boguszpawlowski.chassis)
+[<img src="https://img.shields.io/nexus/s/https/s01.oss.sonatype.org/io.github.boguszpawlowski.chassis/chassis.svg?label=snapshot%20version"/>](https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/boguszpawlowski/chassis/)
 
 ## License
 
-    Copyright 2021 Bogusz Pawłowski
+    Copyright 2022 Bogusz Pawłowski
 
     Licensed under the Apache License, Version 2.0 (the "License");
     you may not use this file except in compliance with the License.

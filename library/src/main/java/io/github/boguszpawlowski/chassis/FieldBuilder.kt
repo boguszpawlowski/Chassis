@@ -7,13 +7,13 @@ public interface FieldBuilderScope<T : Any, V : Any?> {
   public fun validators(vararg validators: Validator<V>)
 }
 
-public fun <T : Any, V : Any?> FieldBuilderScope<T, V>.reducer(reducer: Reducer<T, V>): Reducer<T, V> =
+public fun <T : Any, V : Any?> FieldBuilderScope<T, V>.reduce(reducer: Reducer<T, V>): Reducer<T, V> =
   reducer
 
 @PublishedApi
 internal class FieldBuilder<T : Any, V : Any?>(
-  private val isOptional: Boolean,
   private val initialValue: V?,
+  private val validationStrategy: ValidationStrategy,
 ) : FieldBuilderScope<T, V> {
   private val validators = arrayListOf<Validator<V>>()
 
@@ -21,5 +21,5 @@ internal class FieldBuilder<T : Any, V : Any?>(
     this.validators.addAll(validators)
   }
 
-  fun build(reducer: Reducer<T, V>) = FieldImpl(initialValue, validators, reducer, isOptional)
+  fun build(reducer: Reducer<T, V>) = FieldImpl(initialValue, validators, validationStrategy, reducer)
 }
