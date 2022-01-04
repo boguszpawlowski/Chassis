@@ -1,5 +1,7 @@
 package io.github.boguszpawlowski.chassis
 
+import io.github.boguszpawlowski.chassis.ValidationStrategy.AsOptional
+
 public interface Field<T : Any, V : Any?> {
   public val value: V?
   public val isValid: Boolean
@@ -13,8 +15,8 @@ public interface Field<T : Any, V : Any?> {
 internal data class FieldImpl<T : Any, V : Any?>(
   override val value: V? = null,
   private val validators: List<Validator<V>>,
+  private val validationStrategy: ValidationStrategy,
   private val reducer: Reducer<T, V>,
-  private val isOptional: Boolean,
   private val forcedValidation: List<ValidationResult> = emptyList()
 ) : Field<T, V> {
 
@@ -40,11 +42,11 @@ internal data class FieldImpl<T : Any, V : Any?>(
     return reducer(state, newField)
   }
 
-  override fun invoke(): V = if (isOptional) value as V else checkNotNull(value)
+  override fun invoke(): V =
+    if (validationStrategy == AsOptional) value as V else checkNotNull(value)
 
   private fun validate(value: V?): List<ValidationResult> =
-    performValidation(value, fallback = if (isOptional) Valid else Unspecified)
-
-  private fun performValidation(value: V?, fallback: ValidationResult): List<ValidationResult> =
-    value?.let { nonNullValue -> validators.map { it(nonNullValue) } } ?: listOf(fallback)
+    value?.let { nonNullValue ->
+      validators.map { it(nonNullValue) }
+    } ?: listOf(validationStrategy.fallback)
 }

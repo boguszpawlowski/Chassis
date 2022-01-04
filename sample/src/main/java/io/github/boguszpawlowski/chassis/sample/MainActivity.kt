@@ -27,7 +27,7 @@ import io.github.boguszpawlowski.chassis.field
 import io.github.boguszpawlowski.chassis.longerThan
 import io.github.boguszpawlowski.chassis.matches
 import io.github.boguszpawlowski.chassis.notEmpty
-import io.github.boguszpawlowski.chassis.reducer
+import io.github.boguszpawlowski.chassis.reduce
 import io.github.boguszpawlowski.chassis.required
 import kotlinx.coroutines.launch
 import kotlin.coroutines.resume
@@ -121,23 +121,23 @@ class MainViewModel(
     LoginForm(
       email = field {
         validators(notEmpty(), matches(Patterns.EMAIL_ADDRESS.toRegex()))
-        reducer { copy(email = it) }
+        reduce { copy(email = it) }
       },
       login = field {
         validators(notEmpty())
-        reducer { copy(login = it) }
+        reduce { copy(login = it) }
       },
       password = field {
         validators(notEmpty(), longerThan(8))
-        reducer { copy(password = it) }
+        reduce { copy(password = it) }
       },
       marketingConsent = field {
         validators(required())
-        reducer { copy(marketingConsent = it) }
+        reduce { copy(marketingConsent = it) }
       },
       phoneNumber = field {
         validators(exactly(9), matches("\\d+".toRegex()))
-        reducer { copy(phoneNumber = it) }
+        reduce { copy(phoneNumber = it) }
       }
     )
   }

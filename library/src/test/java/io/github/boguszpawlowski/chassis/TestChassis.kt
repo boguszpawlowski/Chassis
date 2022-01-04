@@ -10,25 +10,25 @@ internal fun testChassis(
 ) = chassis<LoginForm> {
   LoginForm(
     email = field(initialEmail) {
-      reducer { copy(email = it) }
+      reduce { copy(email = it) }
     },
     login = field(initialLogin) {
       validators(notEmpty(TestInvalidCause))
-      reducer { copy(login = it) }
+      reduce { copy(login = it) }
     },
     password = field(initialPassword) {
       validators(longerThan(8, TestInvalidCause), matches("\\d+".toRegex(), TestInvalidCause))
-      reducer { copy(password = it) }
+      reduce { copy(password = it) }
     },
     marketingConsent = field(initialMarketingConsent) {
-      reducer { copy(marketingConsent = it) }
+      reduce { copy(marketingConsent = it) }
     },
     phoneNumber = field(initialPhoneNumber) {
       validators(
         exactly(length = 9, invalid = TestInvalidCause),
         matches(regex = "\\d+".toRegex(), invalid = TestInvalidCause),
       )
-      reducer { copy(phoneNumber = it) }
+      reduce { copy(phoneNumber = it) }
     }
   )
 }
