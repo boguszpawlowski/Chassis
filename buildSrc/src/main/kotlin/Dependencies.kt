@@ -21,6 +21,8 @@ object Kotlin {
   const val SafeArgsPlugin = "androidx.navigation:navigation-safe-args-gradle-plugin:2.2.0"
 
   const val AndroidPluginId = "android"
+  const val MultiplatformPluginId = "multiplatform"
+  const val MultiplatformPluginIdVersion = "1.5.10"
   const val KaptPluginId = "kapt"
   const val SafeArgsPluginId = "androidx.navigation.safeargs.kotlin"
   const val JvmPluginId = "jvm"

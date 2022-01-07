@@ -152,7 +152,6 @@ class MainViewModel(
         phoneNumber = phoneNumber(),
       )
     }
-
     chassis.forceValidation(LoginForm::password, TooSimplePassword)
   }
 }

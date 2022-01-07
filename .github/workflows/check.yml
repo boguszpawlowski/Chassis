@@ -50,7 +50,7 @@ jobs:
           java-version: '15'
 
       - name: Run Debug Unit Tests
-        run: ./gradlew test --stacktrace
+        run: ./gradlew allTests --stacktrace
 
       - name: Stop Gradle
         run: ./gradlew --stop

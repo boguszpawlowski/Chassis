@@ -1,28 +1,44 @@
+@file:Suppress("UnusedPrivateMember")
 import com.vanniktech.maven.publish.SonatypeHost
 
 plugins {
-  kotlin(Kotlin.JvmPluginId)
+  kotlin(Kotlin.MultiplatformPluginId)
   id(MavenPublish.PluginId)
 }
 
 kotlin {
   explicitApi()
 
-  target {
+  jvm {
     compilations.all {
-      kotlinOptions {
-        freeCompilerArgs = freeCompilerArgs + "-Xuse-experimental=kotlin.time.ExperimentalTime"
-      }
+      kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
+    }
+    testRuns["test"].executionTask.configure {
+      useJUnitPlatform()
     }
   }
-}
 
-dependencies {
-  implementation(Coroutines.Core)
+  sourceSets {
+    matching { it.name.endsWith("Test") }.all {
+      languageSettings {
+        optIn("kotlin.time.ExperimentalTime")
+      }
+    }
 
-  testImplementation(Kotest.RunnerJunit5)
-  testImplementation(Kotest.Assertions)
-  testImplementation(CoroutineTest.Turbine)
+    val commonMain by getting {
+      dependencies {
+        implementation(Coroutines.Core)
+      }
+    }
+    val commonTest by getting {
+      dependencies {
+        implementation(Kotest.RunnerJunit5)
+        implementation(Kotest.Assertions)
+        implementation(CoroutineTest.Turbine)
+      }
+    }
+    val jvmMain by getting
+  }
 }
 
 plugins.withId("com.vanniktech.maven.publish") {
