@@ -24,7 +24,7 @@ The Chassis is a very simple concept. At its core its just a `StateFlow` of the 
 ## Advantages
 
 - Dealing with nullability - your form model can accept null values as initial data, but the library will make sure that after validation, you can access non-nullable values, thus saving you the cumbersome process of null checking.
-- Unopinionated - the library is pure Kotlin (currently targeting JVM), thus you can use any view system you need.
+- Unopinionated - the library is pure Kotlin (currently only targeting JVM), thus you can use any view system you need.
 - Lightweight - the only dependency is the core coroutine library.
 - Conciseness - traditionally, when dealing with forms, you code can be quickly polluted by `updateLogin()`, `updateEmail()` etc. functions. The library has only one function for updating the state, leveraging `property reference` feature of Kotlin. 
 - Support for async validation  
@@ -33,22 +33,23 @@ The Chassis is a very simple concept. At its core its just a `StateFlow` of the 
 ## Usage Guide
 
 ### Basic example 
-We are going to build basic login form with client-site validation. For the view system we are going to use Jetpack Compose for Android, but you can use any system you prefer.
+We are going to build basic login form with client-site validation. For the view system we are going to use Jetpack Compose, but you can use any system you need.
 If you want to go straight to the code, you can check out the [BasicSample] file.
 
-1. Model your form data. The recommended way is to use Kotlin's data class. In case you don't use it, make sure you have implemented `equals` function. Every field of the form should be represented by a `Field` interface with the type of the field value.
+### 1. Model your form data. 
+The recommended way is to use Kotlin's data class. In case you don't use it, make sure you have implemented `equals` function. Every field of the form should be represented by a `Field<T, V>` interface where T is the type of the model and V - the type of the data in the field (e.g. `String` for the email, `Boolean` for some kind of consent).
 ```kotlin
   data class LoginForm(
     val login: Field<LoginForm, String>,
     val password: Field<LoginForm, String>,
   )
 ```
-2. Use DSL to make a chassis instance.
+> :exclamation: Since `Chassis` uses a `StateFlow` underneath it is critical to implement a valid equals for your function, due to [equality-based conflation](https://kotlin.github.io/kotlinx.coroutines/kotlinx-coroutines-core/kotlinx.coroutines.flow/-state-flow/).
+### 2. Use DSL to make a chassis instance.
 
 The DSL consists of 4 components:
 
 ### Chassis
-
 The Chassis class is a sort of manager for your form model. It consists of:
 - `state` property - a `StateFlow<T>` with current value of your form model
 - `update` - a function for updating any field of the form, by passing an property reference (e.g. `LoginForm::login`) and the new value.
@@ -57,7 +58,7 @@ The Chassis class is a sort of manager for your form model. It consists of:
 To create an instance of the `Chassis`, use the `chassis` builder function. It accepts value of the type you have provided as a representation of the form data. Using the `Reducers` mechanism it will be able to create subsequent instances of the model.
 
 ### Field
-The `Field` interface is the core component of the library It consists of:
+The `Field` interface is the core component of the library. It consists of:
 - `value` property - current value of the field.
 - `isValid` - whenever the field is valid or not.
 - `isInvalid` - whenever the field is invalid or not.
@@ -95,7 +96,14 @@ The suggested way to reduce the model is to leverage data class `copy` function:
   }
   ...
 ```
-3. Use `invoke()` functions to access the data after submit.
+### 3. Use `invoke()` functions to access the data after submit.
+```kotlin
+  with(loginForm()) { // using invoke function to access current state
+    val loginValue: String = login()
+    val emailValue: String = email()
+  }
+```
+
 ### Full example
 ```kotlin
   class MainViewModel(private val register: RegisterUseCase) {
@@ -113,8 +121,8 @@ The suggested way to reduce the model is to leverage data class `copy` function:
     }
   
     fun onSubmit() {
-      with(loginForm()) { // using invoke function to access current state
-        register(login(), password()) // using invoke function on fields to access current values
+      with(loginForm()) {
+        register(login(), password())
       }
     }
   }
@@ -226,7 +234,7 @@ The common scenario when dealing with forms is server side validation. For this 
     loginForm.forceValidation(LoginForm::email, emailValidationResult)
   }
 ```
-Such validation result will be only present until the next update to the field's value.
+Such result will be appended to the list of the invalid reasons (if it's invalid) and it will be only present until the next update to the field's value.
 
 ## License
 

@@ -6,9 +6,10 @@ import io.github.boguszpawlowski.chassis.ValidationStrategy.AsRequired
 @ChassisDslMarker
 public interface ChassisBuilderScope<T : Any>
 
-@PublishedApi
-internal class ChassisBuilder<T : Any> : ChassisBuilderScope<T>
-
+/**
+ * A builder function which will accept a function declaring the field of the form model. To have a access to this function,
+ * you have to use `chassis` function first.
+ */
 public inline fun <T : Any, reified V : Any?> ChassisBuilderScope<T>.field(
   initialValue: V? = null,
   block: FieldBuilderScope<T, V>.() -> Reducer<T, V>,
@@ -20,6 +21,9 @@ public inline fun <T : Any, reified V : Any?> ChassisBuilderScope<T>.field(
   val reducer = builder.block()
   return builder.build(reducer)
 }
+
+@PublishedApi
+internal class ChassisBuilder<T : Any> : ChassisBuilderScope<T>
 
 @PublishedApi
 internal inline fun <reified T> isNullable(): Boolean = null is T
