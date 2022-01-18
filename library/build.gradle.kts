@@ -11,7 +11,7 @@ kotlin {
 
   jvm {
     compilations.all {
-      kotlinOptions.jvmTarget = JavaVersion.VERSION_11.toString()
+      kotlinOptions.jvmTarget = "1.8"
     }
     testRuns["test"].executionTask.configure {
       useJUnitPlatform()
