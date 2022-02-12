@@ -21,7 +21,7 @@ internal object Unspecified : ValidationResult
 public object Valid : ValidationResult
 
 /**
- * A root interface for the validation failure class hierarchy. Implement it in order to return you custom failures from the validators.
+ * A root interface for the validation failure class hierarchy. Implement it in order to return your custom failures from the validators.
  */
 public interface Invalid : ValidationResult
 

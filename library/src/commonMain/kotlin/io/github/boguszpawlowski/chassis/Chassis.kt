@@ -39,10 +39,16 @@ public interface Chassis<T : Any> {
    * A function for forcing a validation results independently from declared validators (e.g. validation on server).
    * Such validation result will be appended to the list of results from local validators and will be discarded on next update to the field.
    */
-  public fun <V : Any?> forceValidation(
+  public fun <V> forceValidation(
     field: KProperty1<T, Field<T, V>>,
     validationResult: ValidationResult,
   )
+
+  /**
+   * A function for forcing validation on current value of the field. It can be used to force validation, when the input hasn't changed, for example
+   * when we loose focus on the text field.
+   */
+  public fun <V> invalidate(field: KProperty1<T, Field<T, V>>)
 
   /**
    * A function for resetting all fields to the initial values.
@@ -52,7 +58,7 @@ public interface Chassis<T : Any> {
 
 @PublishedApi
 internal class ChassisImpl<T : Any>(
-  private val initialValue: T
+  private val initialValue: T,
 ) : Chassis<T> {
   private val _state = MutableStateFlow(initialValue)
   override val state = _state
@@ -69,6 +75,11 @@ internal class ChassisImpl<T : Any>(
     validationResult: ValidationResult,
   ) {
     val newState = field.get(state.value).forceValidation(state.value, validationResult)
+    _state.value = newState
+  }
+
+  override fun <V> invalidate(field: KProperty1<T, Field<T, V>>) {
+    val newState = field.get(state.value).invalidate(state.value)
     _state.value = newState
   }
 

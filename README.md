@@ -1,5 +1,5 @@
 # Chassis
-A lightweight Kotlin library for a form state management and field validation.
+A lightweight Kotlin library for form state management and field validation.
 
 ![Github Actions](https://github.com/boguszpawlowski/chassis/actions/workflows/check.yml/badge.svg)
 [<img src="https://img.shields.io/maven-central/v/io.github.boguszpawlowski.chassis/chassis.svg?label=release%20version"/>](https://search.maven.org/search?q=g:io.github.boguszpawlowski.chassis)
@@ -55,6 +55,7 @@ The Chassis interface is a sort of manager for your form model. It consists of:
 - `update` - a function for updating any field of the form, by passing an property reference (e.g. `LoginForm::login`) and the new value.
 - `invoke` - a function for returning a current value of the form model - it can be used for getting the data after form submit, or just too peek the value (it's just a syntactic sugar for `Chassis.state.value` )
 - `forceValidation` - a function for forcing the validation result of a field [Async validation](#async-validation).
+- `invalidate` - a function for forcing validation on current value of the field  [Validation on focus lost](#validation-on-focus-lost).
 - `reset` - a function for resetting all fields to the initial values.
 
 To create an instance of the `Chassis`, use the `chassis` builder function. It accepts value of the type you have provided as a representation of the form data.
@@ -69,10 +70,11 @@ To create an instance of the `Chassis`, use the `chassis` builder function. It a
 ### Field
 The `Field` interface is the core component of the library. It consists of:
 - `value` property - current value of the field.
-- `isValid` - whenever the field is valid or not.
-- `isInvalid` - whenever the field is invalid or not.
+- `isValid` property - whenever the field is valid or not.
+- `isInvalid` property - whenever the field is invalid or not.
 - `invalidReasons` - list of all failed validation results.
-- `invoke` function - it returns a current value of the field - it can be used for getting the data after form submit.
+- `obtain` function - it returns a current value of the field - it can be used for getting the data after form submit.
+- `invoke` function - a syntactic sugar for the `obtain` function
 > :exclamation: 'invoke()' function calls a null-assertion (or cast for nullable fields), so you can only call it once you know the data is valid.
 
 To create an instance of the `Field` use the `field` builder function. It accepts a lambda with the `FieldBuilderScope` receivers, which provides a `validators` and `reduce` functions.
@@ -244,6 +246,10 @@ The common scenario when dealing with forms is server side validation. For this 
   }
 ```
 Such result will be appended to the list of the invalid reasons (if it's invalid) and it will be only present until the next update to the field's value.
+
+### Validation on focus lost
+Quite popular use-case is to validate the input when user moves to another field. To accomplish such behavior, you should use the `invalidate` function, when focus on
+an field is lost. In the BasicSample file you can find an example of such behaviour, using `onFocusLost` modifier for Compose.
 
 ## License
 

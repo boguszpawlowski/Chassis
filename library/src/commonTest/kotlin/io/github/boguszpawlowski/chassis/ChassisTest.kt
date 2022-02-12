@@ -43,11 +43,19 @@ internal class ChassisTest : ShouldSpec({
         chassis.state.test {
           awaitItem().asClue {
             it.email.isInvalid shouldBe false
-            println(it.email.value)
-            println(it.email.isValid.toString())
             it.login.isInvalid shouldBe false
             it.password.isInvalid shouldBe false
             it.marketingConsent.isInvalid shouldBe false
+          }
+        }
+      }
+      should("be invalid after invoking 'invalidate'") {
+        chassis.state.test {
+          awaitItem()
+          chassis.invalidate(LoginForm::login)
+          awaitItem().asClue {
+            it.login.isInvalid shouldBe true
+            it.login.isValid shouldBe false
           }
         }
       }
