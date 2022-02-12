@@ -7,55 +7,66 @@ import io.github.boguszpawlowski.chassis.ValidationStrategy.AsOptional
  * field itself. Note that you shouldn't use `update`, `forceValidation` functions on your own, as this are just a pure functions returning a new instance of the interface, and thus not updating the state.
  * Instead, you should use it's counterparts on a `Chassis` interface.
  */
-public interface Field<T : Any, V : Any?> {
+public sealed class Field<T : Any, V> {
   /**
    * Current value of the field.
    */
-  public val value: V?
+  public abstract val value: V?
 
   /**
    * Whenever field is valid or not.
    */
-  public val isValid: Boolean
+  public abstract val isValid: Boolean
 
   /**
    * Whenever field is invalid or not.
    * Syntactic sugar over `invalidReasons.isNotEmpty()`
    */
-  public val isInvalid: Boolean
+  public abstract val isInvalid: Boolean
 
   /**
    * List of reasons for failed validation. If you force the validation, the invalid cause of it will be appended to this list.
    */
-  public val invalidReasons: List<Invalid>
+  public abstract val invalidReasons: List<Invalid>
 
   /**
-   * An effectively internal function for forcing the validation on the field. Use `forceValidation` of the chassis interface instead of it.
+   * A function for forcing the validation on the field. Use `forceValidation` of the chassis interface instead of it.
    * @return a new instance of the field
    * @param state current state of your model
    * @param validationResult validation result which you want to force
    */
-  public fun forceValidation(state: T, validationResult: ValidationResult): T
+  internal abstract fun forceValidation(state: T, validationResult: ValidationResult): T
 
   /**
-   * An effectively internal function for updating the fields value. Use `update` of the chassis interface instead of it.
+   * A function for updating the fields value. Use `update` of the chassis interface instead of it.
    * @return new instance of the field
    */
-  public fun reduce(state: T, newValue: V?): T
+  internal abstract fun reduce(state: T, newValue: V?): T
+
+  /**
+   * A function for re-triggering the validation without a change to the input value
+   */
+  internal abstract fun invalidate(state: T): T
+
+  /**
+   * A syntactic sugar for [resolve].
+   */
+  public abstract operator fun invoke(): V
 
   /**
    * A function that will return current value casted to fields type. Use it only after the validation is completed.
    */
-  public operator fun invoke(): V
+  public abstract fun resolve(): V
 }
 
 internal data class FieldImpl<T : Any, V : Any?>(
   override val value: V? = null,
-  private val validators: List<Validator<V>>,
+  private val validators: List<Validator<V?>>,
   private val validationStrategy: ValidationStrategy,
   private val reducer: Reducer<T, V>,
-  private val forcedValidation: List<ValidationResult> = emptyList()
-) : Field<T, V> {
+  private val forcedValidation: List<ValidationResult> = emptyList(),
+  private val wasInvalidated: Boolean = false,
+) : Field<T, V>() {
 
   private val validationResults: List<ValidationResult>
     get() = validate(value) + forcedValidation
@@ -75,15 +86,37 @@ internal data class FieldImpl<T : Any, V : Any?>(
   }
 
   override fun reduce(state: T, newValue: V?): T {
-    val newField = copy(value = newValue, forcedValidation = emptyList())
+    val newField = copy(
+      value = newValue,
+      forcedValidation = emptyList(),
+      wasInvalidated = false,
+    )
     return reducer(state, newField)
   }
 
-  override fun invoke(): V =
+  override fun invalidate(state: T): T {
+    val newField = copy(wasInvalidated = true)
+
+    return reducer(state, newField)
+  }
+
+  override fun invoke(): V = resolve()
+
+  @Suppress("UNCHECKED_CAST")
+  override fun resolve(): V =
     if (validationStrategy == AsOptional) value as V else checkNotNull(value)
 
   private fun validate(value: V?): List<ValidationResult> =
-    value?.let { nonNullValue ->
-      validators.map { it(nonNullValue) }
+    value.onNotNullOrInvalidated { notValidatedValue ->
+      validators.map { it(notValidatedValue) }
     } ?: listOf(validationStrategy.fallback)
+
+  private inline fun V?.onNotNullOrInvalidated(
+    block: (V?) -> List<ValidationResult>,
+  ): List<ValidationResult>? =
+    if (this != null || this@FieldImpl.wasInvalidated) {
+      block(this)
+    } else {
+      null
+    }
 }

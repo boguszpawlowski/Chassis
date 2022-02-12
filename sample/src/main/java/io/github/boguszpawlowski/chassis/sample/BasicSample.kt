@@ -15,7 +15,11 @@ import androidx.compose.material.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.composed
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -49,6 +53,9 @@ fun MainScreen(viewModel: MainViewModel = MainViewModel()) {
 
     Column {
       TextField(
+        modifier = Modifier.onFocusLost {
+          viewModel.chassis.invalidate(LoginForm::email)
+        },
         value = form.email.value.orEmpty(),
         isError = form.email.isInvalid,
         label = { Text(text = "Email") },
@@ -168,4 +175,18 @@ data class LoginForm(
   val isValid: Boolean
     @Suppress("MaxLineLength")
     get() = login.isValid && email.isValid && password.isValid && marketingConsent.isValid && phoneNumber.isValid
+}
+
+fun Modifier.onFocusLost(onFocusLost: () -> Unit) = composed {
+  val (hadBeenFocused, onHadBeenFocusedChanged) = remember { mutableStateOf(false) }
+
+  this.then(
+    Modifier.onFocusChanged { focusState ->
+      val isFocused = focusState.isFocused
+      when {
+        isFocused && hadBeenFocused.not() -> onHadBeenFocusedChanged(true)
+        hadBeenFocused -> onFocusLost()
+      }
+    }
+  )
 }
