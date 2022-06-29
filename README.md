@@ -12,9 +12,8 @@ Library is available on Maven Central repository.
   dependencies {
     implementation "io.github.boguszpawlowski.chassis:chassis:<latest-version>"
   }
-  
-Snapshots are available on [Sonatype’s snapshots repository](https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/boguszpawlowski/chassis/).  
 ```
+Snapshots are available on [Sonatype’s snapshots repository](https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/boguszpawlowski/chassis/).  
 
 ## The problem
 Dealing with complex form logic is a standard task for almost any modern application. When dealing with multiple inputs and outputs it is hard to keep the code clean, concise and consistent across the project.
