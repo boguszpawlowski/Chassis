@@ -6,12 +6,14 @@ A lightweight Kotlin library for form state management and field validation.
 [<img src="https://img.shields.io/nexus/s/https/s01.oss.sonatype.org/io.github.boguszpawlowski.chassis/chassis.svg?label=snapshot%20version"/>](https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/boguszpawlowski/chassis/)
 
 ## Setup
-Library and it's snapshots are available on Maven Central repository.
+Library is available on Maven Central repository.
 ```kotlin
   // module-level build.gradle
   dependencies {
     implementation "io.github.boguszpawlowski.chassis:chassis:<latest-version>"
   }
+  
+Snapshots are available on [Sonatype’s snapshots repository](https://s01.oss.sonatype.org/content/repositories/snapshots/io/github/boguszpawlowski/chassis/).  
 ```
 
 ## The problem
