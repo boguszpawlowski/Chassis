@@ -11,6 +11,7 @@ plugins {
   id(Shipkit.AutoVersion.PluginId) version Shipkit.AutoVersion.Version
   id(Shipkit.Changelog.PluginId) version Shipkit.Changelog.Version
   id(Shipkit.GithubRelease.PluginId) version Shipkit.GithubRelease.Version
+  id(Kotlin.CompatibilityPlugin) version Kotlin.CompatibilityPluginVersion
 }
 
 buildscript {
@@ -50,6 +51,10 @@ allprojects {
 dependencies {
   detekt(DetektLib.Formatting)
   detekt(DetektLib.Cli)
+}
+
+apiValidation {
+  ignoredProjects.add("sample")
 }
 
 tasks.withType<Detekt> {

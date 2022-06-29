@@ -1,0 +1,97 @@
+public abstract interface class io/github/boguszpawlowski/chassis/Chassis {
+	public abstract fun forceValidation (Lkotlin/reflect/KProperty1;Lio/github/boguszpawlowski/chassis/ValidationResult;)V
+	public abstract fun getState ()Lkotlinx/coroutines/flow/StateFlow;
+	public abstract fun invalidate (Lkotlin/reflect/KProperty1;)V
+	public abstract fun invoke ()Ljava/lang/Object;
+	public abstract fun reset ()V
+	public abstract fun update (Lkotlin/reflect/KProperty1;Ljava/lang/Object;)V
+}
+
+public final class io/github/boguszpawlowski/chassis/ChassisBuilder : io/github/boguszpawlowski/chassis/ChassisBuilderScope {
+	public fun <init> ()V
+}
+
+public abstract interface class io/github/boguszpawlowski/chassis/ChassisBuilderScope {
+}
+
+public final class io/github/boguszpawlowski/chassis/ChassisImpl : io/github/boguszpawlowski/chassis/Chassis {
+	public fun <init> (Ljava/lang/Object;)V
+	public fun forceValidation (Lkotlin/reflect/KProperty1;Lio/github/boguszpawlowski/chassis/ValidationResult;)V
+	public fun getState ()Lkotlinx/coroutines/flow/MutableStateFlow;
+	public synthetic fun getState ()Lkotlinx/coroutines/flow/StateFlow;
+	public fun invalidate (Lkotlin/reflect/KProperty1;)V
+	public fun invoke ()Ljava/lang/Object;
+	public fun reset ()V
+	public fun update (Lkotlin/reflect/KProperty1;Ljava/lang/Object;)V
+}
+
+public final class io/github/boguszpawlowski/chassis/ChassisKt {
+	public static final fun chassis (Lkotlin/jvm/functions/Function1;)Lio/github/boguszpawlowski/chassis/Chassis;
+}
+
+public final class io/github/boguszpawlowski/chassis/DefaultInvalid : io/github/boguszpawlowski/chassis/Invalid {
+	public static final field INSTANCE Lio/github/boguszpawlowski/chassis/DefaultInvalid;
+}
+
+public abstract class io/github/boguszpawlowski/chassis/Field {
+	public abstract fun getInvalidReasons ()Ljava/util/List;
+	public abstract fun getValue ()Ljava/lang/Object;
+	public abstract fun invoke ()Ljava/lang/Object;
+	public abstract fun isInvalid ()Z
+	public abstract fun isValid ()Z
+	public abstract fun resolve ()Ljava/lang/Object;
+}
+
+public final class io/github/boguszpawlowski/chassis/FieldBuilder : io/github/boguszpawlowski/chassis/FieldBuilderScope {
+	public fun <init> (Ljava/lang/Object;Lio/github/boguszpawlowski/chassis/ValidationStrategy;)V
+	public final fun build (Lkotlin/jvm/functions/Function2;)Lio/github/boguszpawlowski/chassis/FieldImpl;
+	public fun validators ([Lio/github/boguszpawlowski/chassis/Validator;)V
+}
+
+public final class io/github/boguszpawlowski/chassis/FieldBuilderKt {
+	public static final fun reduce (Lio/github/boguszpawlowski/chassis/FieldBuilderScope;Lkotlin/jvm/functions/Function2;)Lkotlin/jvm/functions/Function2;
+}
+
+public abstract interface class io/github/boguszpawlowski/chassis/FieldBuilderScope {
+	public abstract fun validators ([Lio/github/boguszpawlowski/chassis/Validator;)V
+}
+
+public abstract interface class io/github/boguszpawlowski/chassis/Invalid : io/github/boguszpawlowski/chassis/ValidationResult {
+}
+
+public final class io/github/boguszpawlowski/chassis/Valid : io/github/boguszpawlowski/chassis/ValidationResult {
+	public static final field INSTANCE Lio/github/boguszpawlowski/chassis/Valid;
+}
+
+public abstract interface class io/github/boguszpawlowski/chassis/ValidationResult {
+}
+
+public final class io/github/boguszpawlowski/chassis/ValidationStrategy : java/lang/Enum {
+	public static final field AsOptional Lio/github/boguszpawlowski/chassis/ValidationStrategy;
+	public static final field AsRequired Lio/github/boguszpawlowski/chassis/ValidationStrategy;
+	public final fun getFallback ()Lio/github/boguszpawlowski/chassis/ValidationResult;
+	public static fun valueOf (Ljava/lang/String;)Lio/github/boguszpawlowski/chassis/ValidationStrategy;
+	public static fun values ()[Lio/github/boguszpawlowski/chassis/ValidationStrategy;
+}
+
+public abstract interface class io/github/boguszpawlowski/chassis/Validator : kotlin/jvm/functions/Function1 {
+}
+
+public final class io/github/boguszpawlowski/chassis/ValidatorKt {
+	public static final fun exactly (ILio/github/boguszpawlowski/chassis/Invalid;)Lio/github/boguszpawlowski/chassis/Validator;
+	public static synthetic fun exactly$default (ILio/github/boguszpawlowski/chassis/Invalid;ILjava/lang/Object;)Lio/github/boguszpawlowski/chassis/Validator;
+	public static final fun longerThan (ILio/github/boguszpawlowski/chassis/Invalid;)Lio/github/boguszpawlowski/chassis/Validator;
+	public static synthetic fun longerThan$default (ILio/github/boguszpawlowski/chassis/Invalid;ILjava/lang/Object;)Lio/github/boguszpawlowski/chassis/Validator;
+	public static final fun matches (Lkotlin/text/Regex;Lio/github/boguszpawlowski/chassis/Invalid;)Lio/github/boguszpawlowski/chassis/Validator;
+	public static synthetic fun matches$default (Lkotlin/text/Regex;Lio/github/boguszpawlowski/chassis/Invalid;ILjava/lang/Object;)Lio/github/boguszpawlowski/chassis/Validator;
+	public static final fun notEmpty (Lio/github/boguszpawlowski/chassis/Invalid;)Lio/github/boguszpawlowski/chassis/Validator;
+	public static synthetic fun notEmpty$default (Lio/github/boguszpawlowski/chassis/Invalid;ILjava/lang/Object;)Lio/github/boguszpawlowski/chassis/Validator;
+	public static final fun notNull (Lio/github/boguszpawlowski/chassis/Invalid;)Lio/github/boguszpawlowski/chassis/Validator;
+	public static synthetic fun notNull$default (Lio/github/boguszpawlowski/chassis/Invalid;ILjava/lang/Object;)Lio/github/boguszpawlowski/chassis/Validator;
+	public static final fun or (Lio/github/boguszpawlowski/chassis/Validator;Lio/github/boguszpawlowski/chassis/Validator;)Lio/github/boguszpawlowski/chassis/Validator;
+	public static final fun required (Lio/github/boguszpawlowski/chassis/Invalid;)Lio/github/boguszpawlowski/chassis/Validator;
+	public static synthetic fun required$default (Lio/github/boguszpawlowski/chassis/Invalid;ILjava/lang/Object;)Lio/github/boguszpawlowski/chassis/Validator;
+	public static final fun shorterThan (ILio/github/boguszpawlowski/chassis/Invalid;)Lio/github/boguszpawlowski/chassis/Validator;
+	public static synthetic fun shorterThan$default (ILio/github/boguszpawlowski/chassis/Invalid;ILjava/lang/Object;)Lio/github/boguszpawlowski/chassis/Validator;
+}
+
